@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>こまります</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1c1c1c;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans JP', sans-serif;
+      gap: 40px;
+      padding: 40px 20px;
+    }
+    .stop-btn {
+      width: 240px; height: 240px; border-radius: 50%;
+      border: none; cursor: pointer; background: none;
+      padding: 0; outline: none; -webkit-tap-highlight-color: transparent;
+    }
+    .stop-btn:focus-visible .btn-face {
+      box-shadow: 0 8px 0 #a33a00, 0 10px 30px rgba(0,0,0,0.6),
+        inset 0 2px 6px rgba(255,255,255,0.15), 0 0 0 4px #fff, 0 0 0 7px #e85500;
+    }
+    .btn-face {
+      width: 100%; height: 100%; border-radius: 50%;
+      background: #e85500;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      box-shadow: 0 8px 0 #a33a00, 0 10px 30px rgba(0,0,0,0.6), inset 0 2px 6px rgba(255,255,255,0.15);
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+      position: relative; overflow: hidden;
+    }
+    .btn-face::before {
+      content: ''; position: absolute; top: 14px; left: 22%; width: 56%; height: 38%;
+      background: radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .btn-text { font-size: 36px; font-weight: 900; color: #fff; letter-spacing: 2px; pointer-events: none; text-shadow: 0 2px 6px rgba(0,0,0,0.3); line-height: 1; }
+    .btn-sub  { font-size: 12px; color: rgba(255,255,255,0.75); letter-spacing: 4px; pointer-events: none; }
+    .stop-btn:active .btn-face { transform: translateY(6px); box-shadow: 0 2px 0 #a33a00, 0 4px 12px rgba(0,0,0,0.5), inset 0 2px 6px rgba(0,0,0,0.2); }
+    .stop-btn.active .btn-face { background: #c04400; transform: translateY(4px); box-shadow: 0 4px 0 #a33a00, 0 6px 20px rgba(0,0,0,0.5), inset 0 2px 6px rgba(0,0,0,0.15); animation: glow-pulse 1.8s ease-in-out infinite; }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 4px 0 #a33a00, 0 6px 20px rgba(0,0,0,0.5), 0 0 0 0px rgba(232,85,0,0); }
+      50%       { box-shadow: 0 4px 0 #a33a00, 0 6px 30px rgba(232,85,0,0.3), 0 0 0 16px rgba(232,85,0,0); }
+    }
+    .reload-btn {
+      background: none;
+      border: 1px solid #444;
+      border-radius: 20px;
+      color: #888;
+      font-size: 13px;
+      font-family: 'Noto Sans JP', sans-serif;
+      letter-spacing: 1px;
+      padding: 10px 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .reload-btn:hover { border-color: #888; color: #bbb; }
+    .reload-btn.hidden { display: none; }
+    .status { font-size: 15px; color: #555; letter-spacing: 2px; transition: color 0.3s ease; text-align: center; }
+    .status.active { color: #4cdf80; text-shadow: 0 0 12px rgba(76,223,128,0.5); animation: blink 1.4s ease-in-out infinite; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body>
+  <button class="stop-btn" id="btn">
+    <div class="btn-face">
+      <div class="btn-text">こまります</div>
+      <div class="btn-sub">STOP</div>
+    </div>
+  </button>
+  <div class="status" id="status">ボタンを押してください</div>
+  <button class="reload-btn" id="reloadBtn">こまりますボタンを使う</button>
+  <div style="color:#333;font-size:11px;letter-spacing:1px;">v3.1</div>
+
+<script>
+let active = false;
+
+function pressButton() {
+  if (active) return;
+  active = true;
+
+  document.getElementById('btn').classList.add('active');
+  document.getElementById('status').textContent = 'それ、こまります';
+  document.getElementById('status').classList.add('active');
+
+  const utter = new SpeechSynthesisUtterance('。それ、こまります。こまります');
+  utter.lang = 'ja-JP';
+  utter.rate = 0.85;
+  utter.pitch = 1.8;
+  utter.volume = 1.0;
+  utter.onend  = () => setTimeout(reset, 3000);
+  utter.onerror = () => setTimeout(reset, 3000);
+  window.speechSynthesis.speak(utter);
+}
+
+function reset() {
+  active = false;
+  document.getElementById('btn').classList.remove('active');
+  document.getElementById('status').textContent = 'ボタンを押してください';
+  document.getElementById('status').classList.remove('active');
+}
+
+document.getElementById('btn').addEventListener('click', pressButton);
+document.getElementById('btn').addEventListener('dblclick', reset);
+document.getElementById('reloadBtn').addEventListener('click', () => location.reload());
+</script>
+</body>
+</html>
