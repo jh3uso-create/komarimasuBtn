@@ -76,7 +76,7 @@
   </button>
   <div class="status" id="status">ボタンを押してください</div>
   <button class="reload-btn" id="reloadBtn">こまりますボタンを使う</button>
-  <div style="color:#333;font-size:11px;letter-spacing:1px;">v3.1</div>
+  <div style="color:#333;font-size:11px;letter-spacing:1px;">v3.2</div>
 
 <script>
 let active = false;
@@ -89,14 +89,15 @@ function pressButton() {
   document.getElementById('status').textContent = 'それ、こまります';
   document.getElementById('status').classList.add('active');
 
-  const utter = new SpeechSynthesisUtterance('。それ、こまります。こまります');
+  const utter = new SpeechSynthesisUtterance('それ、こまります。こまります');
   utter.lang = 'ja-JP';
   utter.rate = 0.85;
   utter.pitch = 1.8;
   utter.volume = 1.0;
   utter.onend  = () => setTimeout(reset, 3000);
   utter.onerror = () => setTimeout(reset, 3000);
-  window.speechSynthesis.speak(utter);
+  // 頭切れ対策: 少し待ってから発話
+  setTimeout(() => window.speechSynthesis.speak(utter), 300);
 }
 
 function reset() {
