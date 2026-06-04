@@ -97,7 +97,7 @@ function pressButton() {
   utter.onend  = () => setTimeout(reset, 3000);
   utter.onerror = () => setTimeout(reset, 3000);
   // 頭切れ対策: 少し待ってから発話
-  setTimeout(() => window.speechSynthesis.speak(utter), 300);
+  setTimeout(() => window.speechSynthesis.speak(utter), 400);
 }
 
 function reset() {
